@@ -1,15 +1,49 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, ActivityIndicator} from 'react-native';
-import {Divider, Card, Title} from 'react-native-paper';
+import {
+  StyleSheet,
+  View,
+  ActivityIndicator,
+  ScrollView,
+  Platform,
+  Linking,
+  TouchableOpacity,
+} from 'react-native';
+import {Divider, Text, Title} from 'react-native-paper';
 
 class Contact extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      drugData: [],
-      isLoading: false,
+      contactData: null,
+      isLoading: true,
     };
   }
+
+  dialCall = (num) => {
+    let phoneNumber = '';
+
+    if (Platform.OS === 'android') {
+      phoneNumber = 'tel:$' + num;
+    } else {
+      phoneNumber = 'telprompt:$' + num;
+    }
+
+    Linking.openURL(phoneNumber);
+  };
+
+  componentDidMount() {
+    return fetch('https://api.rootnet.in/covid19-in/contacts', {
+      method: 'GET',
+    })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        this.setState({
+          isLoading: false,
+          contactData: responseJson,
+        });
+      });
+  }
+
   static navigationOptions = {
     title: 'Contacts   ',
   };
@@ -25,7 +59,16 @@ class Contact extends Component {
           />
         ) : (
           <React.Fragment>
-            <Title style={styles.title}>Recently Added Drugs</Title>
+            <ScrollView>
+              <Title style={styles.title}>
+                Offical Contact Info and Social Media Handles:
+              </Title>
+              <TouchableOpacity
+                onPress={this.dialCall(9652522157)}
+                activeOpacity={0.7}>
+                <Text>OPEN PHONE NUMBER IN DIAL SCREEN</Text>
+              </TouchableOpacity>
+            </ScrollView>
           </React.Fragment>
         )}
       </View>

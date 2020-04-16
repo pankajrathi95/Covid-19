@@ -2,6 +2,7 @@ import React from 'react';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
+//import { createStackNavigator } from '@react-navigation/stack';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IconA from 'react-native-vector-icons/AntDesign';
@@ -16,7 +17,6 @@ import Notification from './src/screens/Notification';
 import Testing from './src/screens/Testing';
 import About from './src/screens/About';
 import DayWiseCase from './src/screens/DayWiseCase';
-import {forModalPresentationIOS} from 'react-navigation-stack/lib/typescript/src/vendor/TransitionConfigs/CardStyleInterpolators';
 
 const CaseNavigator = createStackNavigator(
   {
@@ -201,7 +201,12 @@ const AppDrawerNavigator = createMaterialBottomTabNavigator(
 );
 
 const Stack = createStackNavigator({
-  Home: AppDrawerNavigator,
+  Home: {
+    screen: AppDrawerNavigator,
+    navigationOptions: {
+      header: null,
+    },
+  },
   DayWiseCase: DayWiseCase,
   About: About,
 });
