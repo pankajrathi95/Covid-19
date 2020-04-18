@@ -7,7 +7,7 @@ import {
   Linking,
   ScrollView,
 } from 'react-native';
-import {Divider, Text, Title} from 'react-native-paper';
+import {Text, Title} from 'react-native-paper';
 
 class Notification extends Component {
   constructor(props) {
@@ -36,13 +36,13 @@ class Notification extends Component {
       <React.Fragment>
         <View key={datum.link} style={{flex: 1, flexDirection: 'row'}}>
           <Text>{datum.loc}</Text>
-          <TouchableOpacity
-            style={{marginBottom: 5}}
-            activeOpacity={0.7}
-            onPress={() => {
-              Linking.openURL(datum.link);
-            }}>
-            <Text>{count + '. ' + datum.title}</Text>
+          <TouchableOpacity style={{marginBottom: 5}} activeOpacity={0.7}>
+            <Text
+              onPress={() => {
+                Linking.openURL(datum.link);
+              }}>
+              {count + '. ' + datum.title}
+            </Text>
           </TouchableOpacity>
         </View>
       </React.Fragment>
