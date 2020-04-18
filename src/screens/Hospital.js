@@ -5,6 +5,7 @@ import {
   ActivityIndicator,
   Dimensions,
   ScrollView,
+  Linking,
 } from 'react-native';
 import {Divider, Text, Title} from 'react-native-paper';
 

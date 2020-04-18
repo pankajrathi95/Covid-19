@@ -1,14 +1,14 @@
+/* eslint-disable space-infix-ops */
 import React, {Component} from 'react';
 import {
   StyleSheet,
   View,
   ActivityIndicator,
   ScrollView,
-  Platform,
   Linking,
   TouchableOpacity,
 } from 'react-native';
-import {Divider, Text, Title} from 'react-native-paper';
+import {Text, Title, Divider} from 'react-native-paper';
 
 class Contact extends Component {
   constructor(props) {
@@ -18,18 +18,6 @@ class Contact extends Component {
       isLoading: true,
     };
   }
-
-  dialCall = (num) => {
-    let phoneNumber = '';
-
-    if (Platform.OS === 'android') {
-      phoneNumber = 'tel:$' + num;
-    } else {
-      phoneNumber = 'telprompt:$' + num;
-    }
-
-    Linking.openURL(phoneNumber);
-  };
 
   componentDidMount() {
     return fetch('https://api.rootnet.in/covid19-in/contacts', {
@@ -44,11 +32,40 @@ class Contact extends Component {
       });
   }
 
+  renderRow(datum) {
+    return (
+      <React.Fragment>
+        <View style={{flex: 1, alignSelf: 'stretch', flexDirection: 'row'}}>
+          <View style={{flex: 1, alignSelf: 'stretch'}}>
+            <Text>{datum.loc}</Text>
+          </View>
+          {/* Edit these as they are your cells. You may even take parameters to display different data / react elements etc. */}
+          <View style={{flex: 1, alignSelf: 'stretch'}}>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => {
+                Linking.openURL('tel:' + datum.number);
+              }}>
+              <Text>{datum.number}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View
+          style={{
+            borderBottomWidth: 1,
+            borderBottomColor: 'black',
+            width: 400,
+          }}
+        />
+      </React.Fragment>
+    );
+  }
+
   static navigationOptions = {
     title: 'Contacts   ',
   };
   render() {
-    const {isLoading} = this.state;
+    const {isLoading, contactData} = this.state;
     return (
       <View style={styles.container}>
         {isLoading ? (
@@ -63,11 +80,78 @@ class Contact extends Component {
               <Title style={styles.title}>
                 Offical Contact Info and Social Media Handles:
               </Title>
-              <TouchableOpacity
-                onPress={this.dialCall(9652522157)}
-                activeOpacity={0.7}>
-                <Text>OPEN PHONE NUMBER IN DIAL SCREEN</Text>
-              </TouchableOpacity>
+              <View style={styles.viewRow}>
+                <Text>India-wide Contact Number: </Text>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={() => {
+                    Linking.openURL(
+                      'tel:' + contactData.data.contacts.primary.number,
+                    );
+                  }}>
+                  <Text>{contactData.data.contacts.primary.number}</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.viewRow}>
+                <Text>India-wide Contact Number (Toll-free): </Text>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={() => {
+                    Linking.openURL('tel:1075');
+                  }}>
+                  <Text>1075</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.viewRow}>
+                <Text>Email: </Text>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={() => {
+                    Linking.openURL(
+                      'mailto:' + contactData.data.contacts.primary.email,
+                    );
+                  }}>
+                  <Text>{contactData.data.contacts.primary.email}</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.viewRow}>
+                <Text>Twitter: </Text>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={() => {
+                    Linking.openURL(contactData.data.contacts.primary.twitter);
+                  }}>
+                  <Text
+                    style={{color: 'blue', textDecorationLine: 'underline'}}>
+                    {contactData.data.contacts.primary.twitter}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.viewRow}>
+                <Text>Facebook: </Text>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={() => {
+                    Linking.openURL(contactData.data.contacts.primary.facebook);
+                  }}>
+                  <Text
+                    style={{color: 'blue', textDecorationLine: 'underline'}}>
+                    {contactData.data.contacts.primary.facebook}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <Divider style={{marginBottom: 10}} />
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                {contactData.data.contacts.regional.map((datum) => {
+                  // This will render a row for each data element.
+                  return this.renderRow(datum);
+                })}
+              </View>
             </ScrollView>
           </React.Fragment>
         )}
@@ -89,6 +173,12 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     padding: 10,
+  },
+  viewRow: {
+    flexDirection: 'row',
+    marginLeft: 15,
+    marginRight: 15,
+    marginBottom: 5,
   },
 });
 
